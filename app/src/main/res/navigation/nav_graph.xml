@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="dev.manuel.timetable.HomeFragment"
+        android:label="@string/timetable"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_newClassFragment"
+            app:destination="@id/newClassFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_tasksFragment"
+            app:destination="@id/tasksFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_timetablesFragment"
+            app:destination="@id/timetablesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_classDetailsFragment"
+            app:destination="@id/classDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newClassFragment"
+        android:name="dev.manuel.timetable.NewClassFragment"
+        android:label="@string/edit_class"
+        tools:layout="@layout/fragment_new_class">
+        <argument
+            android:name="dayOfWeek"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="timetableId"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <argument
+            android:name="classId"
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/tasksFragment"
+        android:name="dev.manuel.timetable.TasksFragment"
+        android:label="@string/tasks"
+        tools:layout="@layout/fragment_tasks">
+        <argument
+            android:name="classId"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_tasksFragment_to_selectClassFragment"
+            app:destination="@id/selectClassFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timetablesFragment"
+        android:name="dev.manuel.timetable.TimetablesFragment"
+        android:label="@string/timetables_screen_title"
+        tools:layout="@layout/fragment_timetables" />
+    <fragment
+        android:id="@+id/classDetailsFragment"
+        android:name="dev.manuel.timetable.ClassDetailsFragment"
+        android:label="@string/class_details"
+        tools:layout="@layout/fragment_class_details">
+        <argument
+            android:name="classId"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_classDetailsFragment_to_newClassFragment"
+            app:destination="@id/newClassFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/classesFragment"
+        android:name="dev.manuel.timetable.ui.screens.classes.ClassesFragment"
+        android:label="@string/all_classes"
+        tools:layout="@layout/fragment_classes" >
+        <action
+            android:id="@+id/action_classesFragment_to_classDetailsFragment"
+            app:destination="@id/classDetailsFragment" />
+    </fragment><action android:id="@+id/action_global_classDetailsFragment" app:destination="@id/classDetailsFragment"/><action android:id="@+id/action_global_newClassFragment" app:destination="@id/newClassFragment"/>
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="dev.manuel.timetable.ui.screens.notes.NotesFragment"
+        android:label="Tus notas"
+        tools:layout="@layout/fragment_notes" >
+        <action
+            android:id="@+id/action_notesFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="dev.manuel.timetable.ui.screens.notes.EditNoteFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="noteId"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <action
+            android:id="@+id/action_editNoteFragment_to_selectClassFragment"
+            app:destination="@id/selectClassFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectClassFragment"
+        android:name="dev.manuel.timetable.ui.screens.classes.SelectClassFragment"
+        android:label="Selecciona la clase"
+        tools:layout="@layout/fragment_select_class" />
+</navigation>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="false">
+    <group android:checkableBehavior="single"
+        android:id="@+id/main_menu_group">
+        <item
+            android:id="@+id/homeFragment"
+            android:icon="@drawable/ic_outline_home_24"
+            android:title="@string/navigation_home_item"
+            android:checkable="true"/>
+        <item
+            android:id="@+id/tasksFragment"
+            android:icon="@drawable/ic_outline_checklist_24"
+            android:title="@string/navigation_tasks_item"
+            android:checkable="true"/>
+        <item
+            android:id="@+id/notesFragment"
+            android:title="@string/navigation_notes_item"
+            android:icon="@drawable/ic_baseline_notes_24"
+            android:checkable="true"/>
+    </group>
+
+    <group android:id="@+id/classes_menu_group">
+        <item
+            android:orderInCategory="0"
+            android:id="@+id/classesFragment"
+            android:title="@string/navigation_classes_item"
+            android:icon="@drawable/ic_outline_book_24"
+            android:checkable="true"/>
+
+        <item
+            android:orderInCategory="7"
+            android:id="@+id/create_class_item"
+            android:title="@string/create_class"
+            android:icon="@drawable/ic_outline_add_24"
+            android:checkable="true"/>
+    </group>
+
+</menu>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/favorite_note_item"
+        android:icon="@drawable/outline_favorite_border_24"
+        android:title="Favorita"
+        android:visible="true" />
+    <item
+        android:id="@+id/pin_note_item"
+        android:icon="@drawable/outline_push_pin_24"
+        android:title="Anclar"
+        android:visible="true"/>
+</menu>
