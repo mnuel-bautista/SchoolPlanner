@@ -13,11 +13,11 @@ import dev.manuel.timetable.room.entities.*
 @Database(
     entities = [
         Timetable::class, Class::class, Task::class, Occurrence::class,
-        Note::class,
+        Note::class, Period::class, Grade::class,
     ],
     views = [TaskWithSubject::class],
-    version = 2,
-    exportSchema = true,
+    version = 1,
+    exportSchema = false,
 )
 @TypeConverters(AppConverters::class)
 abstract class ApplicationDatabase : RoomDatabase() {
@@ -26,9 +26,13 @@ abstract class ApplicationDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
 
+    abstract fun periodDao(): PeriodDao
+
     abstract fun occurrenceDao(): OccurrenceDao
 
     abstract fun timetableDao(): TimetableDao
+
+    abstract fun gradeDao(): GradeDao
 
     abstract fun noteDao(): NoteDao
 
@@ -49,6 +53,7 @@ abstract class ApplicationDatabase : RoomDatabase() {
                     "timetable_database"
                 )
                     .fallbackToDestructiveMigration()
+                    .createFromAsset("timetable_database.db")
                     .build()
                 INSTANCE = instance
                 // return instance

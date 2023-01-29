@@ -42,52 +42,54 @@ class EditNoteVM @Inject constructor(
     fun changeTitle(title: String) {
         val note = _noteWithClass.value.note
         _noteWithClass.value = noteWithClass.value.copy(
-            note = note.copy(title = title)
+            note = note?.copy(title = title)
         )
     }
 
     fun changeContent(content: String) {
         val note = _noteWithClass.value.note
         _noteWithClass.value = noteWithClass.value.copy(
-            note = note.copy(content = content)
+            note = note?.copy(content = content)
         )
     }
 
     fun changeClass(mClass: dev.manuel.timetable.room.entities.Class) {
+        val note = _noteWithClass.value.note
         _noteWithClass.value = noteWithClass.value.copy(
-            mClass = mClass
+            mClass = mClass,
+            note = note?.copy(classId = mClass.id)
         )
     }
 
     fun markAsFavorite() {
         val note = _noteWithClass.value.note
         _noteWithClass.value = noteWithClass.value.copy(
-            note = note.copy(isFavorite = !note.isFavorite)
+            note = note?.copy(isFavorite = !note.isFavorite)
         )
     }
 
     fun pinNote() {
         val note = _noteWithClass.value.note
         _noteWithClass.value = noteWithClass.value.copy(
-            note = note.copy(isPinned = !note.isPinned)
+            note = note?.copy(isPinned = !note.isPinned)
         )
     }
 
     fun deleteNote() {
         viewModelScope.launch {
-            noteDao.delete(noteWithClass.value.note.id)
+            noteWithClass.value.note?.let { noteDao.delete(it.id) }
         }
     }
 
 
     fun saveChanges() {
         viewModelScope.launch {
-            if(noteWithClass.value.note.id == 0L) {
-                noteDao.insert(noteWithClass.value.note)
+            if(noteWithClass.value.note?.id == 0L) {
+                noteDao.insert(noteWithClass.value.note!!)
                 _uiEvent.emit(UIEvent.ShowMessage(R.string.note_added))
                 _uiEvent.emit(UIEvent.NavigateBack)
             } else {
-                noteDao.update(noteWithClass.value.note)
+                noteWithClass.value.note?.let { noteDao.update(it) }
                 _uiEvent.emit(UIEvent.NavigateBack)
             }
         }

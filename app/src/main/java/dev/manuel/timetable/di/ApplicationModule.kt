@@ -32,28 +32,21 @@ class ApplicationModule {
     }
 
     @Provides
-    fun providesClassDao(db: ApplicationDatabase): ClassDao {
-        return db.classDao()
-    }
+    fun providesClassDao(db: ApplicationDatabase) = db.classDao()
+    @Provides
+    fun providesOccurrenceDao(db: ApplicationDatabase) = db.occurrenceDao()
 
     @Provides
-    fun providesOccurrenceDao(db: ApplicationDatabase): OccurrenceDao {
-        return db.occurrenceDao()
-    }
+    fun providesTimetableDao(db: ApplicationDatabase) = db.timetableDao()
 
     @Provides
-    fun providesTimetableDao(db: ApplicationDatabase): TimetableDao {
-        return db.timetableDao()
-    }
+    fun providesTaskDao(db: ApplicationDatabase) = db.taskDao()
 
     @Provides
-    fun providesTaskDao(db: ApplicationDatabase): TaskDao {
-        return db.taskDao()
-    }
-
+    fun providesNoteDao(db: ApplicationDatabase) = db.noteDao()
     @Provides
-    fun providesNoteDao(db: ApplicationDatabase): NoteDao {
-        return db.noteDao()
-    }
+    fun providesPeriodDao(db: ApplicationDatabase): PeriodDao = db.periodDao()
+    @Provides
+    fun providesGradeDao(db: ApplicationDatabase) = db.gradeDao()
 
 }

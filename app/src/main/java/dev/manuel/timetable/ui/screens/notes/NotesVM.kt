@@ -23,7 +23,7 @@ class NotesVM @Inject constructor(
     init {
         viewModelScope.launch {
             noteDao.getNotesWithClass().collect {
-                _notesWithClass.value = it
+                _notesWithClass.value = it.filter { nwc -> nwc.note != null }
             }
         }
     }

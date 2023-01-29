@@ -101,4 +101,10 @@
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="save">Save</string>
     <string name="note_added">Note has been added</string>
+    <string name="period_added_success">Period has been added</string>
+    <string name="grade_added_success">Grade has been added</string>
+    <string name="new_period">New Period</string>
+    <string name="period_text_field_hint">Period</string>
+    <string name="new_description">Period description</string>
+    <string name="description_text_field_hint">Description</string>
 </resources>

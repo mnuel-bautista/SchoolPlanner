@@ -7,8 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.accompanist.themeadapter.material3.Mdc3Theme
 import dagger.hilt.android.AndroidEntryPoint
+import dev.manuel.timetable.databinding.FragmentTimetablesBinding
 import dev.manuel.timetable.ui.screens.timetable.ContextMenuFragment
 import dev.manuel.timetable.ui.screens.timetable.EditTimetableFragmentBottomSheet
 import dev.manuel.timetable.ui.screens.timetable.TimetablesScreen
@@ -18,6 +22,8 @@ import dev.manuel.timetable.ui.screens.timetable.TimetablesVM
 class TimetablesFragment : Fragment() {
 
     private val viewModel: TimetablesVM by viewModels()
+
+    private lateinit var binding: FragmentTimetablesBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +36,7 @@ class TimetablesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val composeView = view.findViewById<ComposeView>(R.id.fragmentTimetables)
+        binding = FragmentTimetablesBinding.bind(view)
         composeView.setContent {
             Mdc3Theme {
                 TimetablesScreen(
@@ -57,7 +64,23 @@ class TimetablesFragment : Fragment() {
                     }
                 )
             }
+            setUpWithNavController()
         }
+    }
+
+    private fun setUpWithNavController() {
+        val navController = findNavController()
+        val toolbar = binding.toolbar
+
+        val activity = activity as MainActivity
+
+        val appbarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(R.id.homeFragment)
+        )
+        toolbar.setupWithNavController(navController, appbarConfiguration)
+
+        activity.setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     }
 
 }

@@ -44,7 +44,7 @@ fun EditNoteScreen(
     val noteWithClass by viewModel.noteWithClass.collectAsState()
 
     EditNoteScreenContent(
-        note = noteWithClass.note,
+        note = noteWithClass.note ?: Note(),
         mClass = noteWithClass.mClass,
         onTitleChange = viewModel::changeTitle,
         onContentChange = viewModel::changeContent,

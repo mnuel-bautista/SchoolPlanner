@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_classDetailsFragment_to_newClassFragment"
             app:destination="@id/newClassFragment" />
+        <action
+            android:id="@+id/action_classDetailsFragment_to_newPeriodFragment"
+            app:destination="@id/newPeriodFragment" />
     </fragment>
     <fragment
         android:id="@+id/classesFragment"
@@ -108,4 +111,18 @@
         android:name="dev.manuel.timetable.ui.screens.classes.SelectClassFragment"
         android:label="Selecciona la clase"
         tools:layout="@layout/fragment_select_class" />
+    <fragment
+        android:id="@+id/newPeriodFragment"
+        android:name="dev.manuel.timetable.ui.screens.periods.NewPeriodFragment"
+        android:label="New Period"
+        tools:layout="@layout/fragment_new_period" >
+        <argument
+            android:name="periodId"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="classId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
 </navigation>

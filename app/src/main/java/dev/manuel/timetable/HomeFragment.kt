@@ -2,12 +2,14 @@ package dev.manuel.timetable
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -15,11 +17,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.manuel.timetable.databinding.FragmentHomeBinding
 import dev.manuel.timetable.ui.adapters.DayOfWeekFragment
 import dev.manuel.timetable.ui.adapters.MPagerAdapter
-import dev.manuel.timetable.ui.screens.TimetableScreen
 import dev.manuel.timetable.ui.screens.TimetableVM
-import dev.manuel.timetable.ui.theme.TimetableTheme
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -79,6 +80,7 @@ class HomeFragment : Fragment() {
 
         navController = findNavController()
 
+
         val monday = DayOfWeekFragment()
         val tuesday = DayOfWeekFragment()
         val wednesday = DayOfWeekFragment()
@@ -94,11 +96,13 @@ class HomeFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.courses.collect {
-                monday.classes = it.filter { dow -> dow.occurrence.dayOfWeek.ordinal == 0 }
-                tuesday.classes = it.filter { dow -> dow.occurrence.dayOfWeek.ordinal == 1 }
-                wednesday.classes = it.filter { dow -> dow.occurrence.dayOfWeek.ordinal == 2 }
-                thursday.classes = it.filter { dow -> dow.occurrence.dayOfWeek.ordinal == 3 }
-                friday.classes = it.filter { dow -> dow.occurrence.dayOfWeek.ordinal == 4 }
+                monday.classes = it.filter { dow -> dow.occurrence.dayOfWeek == DayOfWeek.MONDAY }
+                tuesday.classes = it.filter { dow -> dow.occurrence.dayOfWeek == DayOfWeek.TUESDAY }
+                wednesday.classes =
+                    it.filter { dow -> dow.occurrence.dayOfWeek == DayOfWeek.WEDNESDAY }
+                thursday.classes =
+                    it.filter { dow -> dow.occurrence.dayOfWeek == DayOfWeek.THURSDAY }
+                friday.classes = it.filter { dow -> dow.occurrence.dayOfWeek == DayOfWeek.FRIDAY }
             }
         }
 
@@ -116,6 +120,10 @@ class HomeFragment : Fragment() {
         }.attach()
 
 
+        setUpWithNavController()
+        binding.fab.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_newClassFragment)
+        }
     }
 
 
@@ -125,6 +133,20 @@ class HomeFragment : Fragment() {
                 (requireActivity() as MainActivity).supportActionBar?.title = timetableName
             }
         }
+    }
+
+    private fun setUpWithNavController() {
+        val navController = findNavController()
+        val toolbar = binding.toolbar
+
+        val activity = activity as MainActivity
+
+        val appbarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(R.id.homeFragment)
+        )
+        toolbar.setupWithNavController(navController, appbarConfiguration)
+
+        activity.setSupportActionBar(toolbar)
     }
 
     override fun onStop() {

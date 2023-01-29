@@ -23,7 +23,7 @@ object AppConverters {
 
     @TypeConverter
     fun fromDayOfWeek(day: DayOfWeek): Int {
-        return day.ordinal
+        return day.value
     }
 
     @TypeConverter

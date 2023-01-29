@@ -1,8 +1,6 @@
 package dev.manuel.timetable.ui.screens.classes
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -15,13 +13,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.themeadapter.material3.Mdc3Theme
 import dev.manuel.timetable.R
 import dev.manuel.timetable.format
+import dev.manuel.timetable.room.entities.Period
 import dev.manuel.timetable.ui.safeCollector
 
 @Composable
 fun ClassDetailsScreen(
     viewModel: ClassDetailsVM,
+    onCreatePeriod: () -> Unit,
+    onNavigateToPeriod: (Period) -> Unit,
     onNavigateToEditClass: () -> Unit,
     onNavigateUp: () -> Unit,
 ) {
@@ -42,6 +44,8 @@ fun ClassDetailsScreen(
     ClassDetailsContent(
         uiState = uiState,
         onEditClass = onNavigateToEditClass,
+        onCreatePeriod = onCreatePeriod,
+        onNavigateToPeriod = onNavigateToPeriod,
         onDeleteClass = viewModel::onDeleteClass,
         onNavigateUp = onNavigateUp
     )
@@ -51,6 +55,8 @@ fun ClassDetailsScreen(
 @Composable
 private fun ClassDetailsContent(
     uiState: ClassDetailsScreenState,
+    onCreatePeriod: () -> Unit,
+    onNavigateToPeriod: (Period) -> Unit,
     onEditClass: () -> Unit,
     onDeleteClass: () -> Unit,
     onNavigateUp: () -> Unit,
@@ -63,13 +69,23 @@ private fun ClassDetailsContent(
     Surface {
         Column {
             ListItem(
-                leadingContent = { Icon(imageVector = Icons.Outlined.School, contentDescription = null) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.School,
+                        contentDescription = null
+                    )
+                },
                 headlineText = { Text(text = stringResource(id = R.string.subject)) },
                 supportingText = { Text(text = mClass.subject) }
             )
 
             ListItem(
-                leadingContent = { Icon(imageVector = Icons.Outlined.Person, contentDescription = null) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = null
+                    )
+                },
                 headlineText = { Text(text = stringResource(id = R.string.teacher)) },
                 supportingText = { Text(text = mClass.teacher) }
             )
@@ -86,17 +102,28 @@ private fun ClassDetailsContent(
             )
 
             ListItem(
-                leadingContent = { Icon(imageVector = Icons.Outlined.Schedule, contentDescription = null) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.Schedule,
+                        contentDescription = null
+                    )
+                },
                 headlineText = { Text(text = stringResource(id = R.string.timetable)) },
                 supportingText = { Text(text = timetable) }
             )
 
-            if(occurrences.isNotEmpty()) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                ) {
-                    items(occurrences) {
+            Text(
+                modifier = Modifier.padding(all = 16.dp),
+                text = "Occurrences",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                if(occurrences.isNotEmpty()) {
+                    occurrences.forEach {
                         Card {
                             ListItem(
                                 colors = ListItemDefaults.colors(
@@ -108,13 +135,52 @@ private fun ClassDetailsContent(
                             )
                         }
                     }
+                } else {
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(text = stringResource(id = R.string.no_classes))
+                    }
                 }
-            } else {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = R.string.no_classes))
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
+                    Text("Create New Occurrence")
                 }
             }
 
+            Text(
+                modifier = Modifier.padding(all = 16.dp),
+                text = "Periods",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                if(uiState.periods.isNotEmpty()) {
+                    uiState.periods.forEach {
+                        OutlinedCard(colors = CardDefaults.outlinedCardColors(), onClick = {
+                            onNavigateToPeriod(it)
+                        }) {
+                            ListItem(
+                                colors = ListItemDefaults.colors(
+                                    containerColor = Color.Transparent
+                                ),
+                                headlineText = { Text(text = it.period) },
+                                supportingText = { Text(text = it.description) }
+                            )
+                        }
+                    }
+                } else {
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(text = "This class doesn't have any periods yet")
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { onCreatePeriod() }) {
+                    Text("Create New Period")
+                }
+                Spacer(Modifier.height(16.dp))
+            }
         }
     }
 }
@@ -144,10 +210,20 @@ private fun DeleteClassDialog(
 @Preview
 @Composable
 private fun DefaultPreview() {
-    ClassDetailsContent(
-        ClassDetailsScreenState(),
-        onEditClass = {},
-        onDeleteClass = {},
-        onNavigateUp = {}
-    )
+    Mdc3Theme {
+        ClassDetailsContent(
+            ClassDetailsScreenState(
+                periods = listOf(
+                    Period(1, "First Semester", "Lorem Ipsum"),
+                    Period(2, "Second Semester", "Lorem Ipsum"),
+                    Period(3, "Third Semester", "Lorem Ipsum"),
+                )
+            ),
+            onCreatePeriod = {},
+            onNavigateToPeriod = {},
+            onEditClass = {},
+            onDeleteClass = {},
+            onNavigateUp = {}
+        )
+    }
 }

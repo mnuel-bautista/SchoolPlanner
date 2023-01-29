@@ -1,6 +1,7 @@
 package dev.manuel.timetable
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -8,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.get
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.*
 import androidx.navigation.ui.AppBarConfiguration
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
+    lateinit var drawerLayout: DrawerLayout
+
     private val viewModel: MainActivityVM by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,52 +42,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ContentMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
 
         navController = findNavController(R.id.nav_host_fragment)
-        val drawerLayout = binding.drawerLayout
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.homeFragment, R.id.classesFragment,
-                R.id.tasksFragment, R.id.notesFragment,
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navigationView.setupWithNavController(navController)
-
-
-        setupFab()
 
         addClassesToDrawer()
-        addDestinationListener()
+        drawerLayout = binding.drawerLayout
     }
 
-    private fun setupFab() {
-        binding.fab.setOnClickListener {
-            when (navController.currentDestination?.id) {
-                R.id.homeFragment -> {
-                    navController.navigate(R.id.action_homeFragment_to_newClassFragment)
-                }
-                R.id.notesFragment -> {
-                    navController.navigate(R.id.action_notesFragment_to_editNoteFragment)
-                }
-            }
-        }
-    }
-
-
-    private fun addDestinationListener() {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.homeFragment, R.id.notesFragment -> {
-                    binding.fab.show()
-                }
-                else -> binding.fab.hide()
-            }
-        }
-    }
 
     private fun addClassesToDrawer() {
         lifecycleScope.launch {
@@ -130,10 +98,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
 
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
 }

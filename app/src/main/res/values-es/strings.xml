@@ -99,4 +99,10 @@
     <string name="create_class">Crear clase</string>
     <string name="save">Guardar</string>
     <string name="note_added">La nota se ha agregado</string>
+    <string name="period_added_success">El periodo se ha agregado</string>
+    <string name="grade_added_success">La calificación se ha agregado</string>
+    <string name="new_period">Nuevo Periodo</string>
+    <string name="period_text_field_hint">Periodo</string>
+    <string name="new_description">Description de periodo</string>
+    <string name="description_text_field_hint">Descripción</string>
 </resources>

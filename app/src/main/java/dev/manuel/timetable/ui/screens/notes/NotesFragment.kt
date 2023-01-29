@@ -56,7 +56,9 @@ class NotesFragment : Fragment() {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .clickable {
-                                    findNavController().navigate(R.id.action_notesFragment_to_editNoteFragment, bundleOf("noteId" to note.id))
+                                    if (note != null) {
+                                        findNavController().navigate(R.id.action_notesFragment_to_editNoteFragment, bundleOf("noteId" to note.id))
+                                    }
                                 }
                         ) {
                             Column(
@@ -71,11 +73,11 @@ class NotesFragment : Fragment() {
                                 )
 
                                 Text(
-                                    text = note.title,
+                                    text = note?.title ?: "",
                                     style = MaterialTheme.typography.titleLarge
                                 )
                                 Text(
-                                    text = note.content,
+                                    text = note?.content ?: "",
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }

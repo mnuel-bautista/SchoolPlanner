@@ -9,8 +9,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.manuel.timetable.ClassDetailsFragmentArgs
 import dev.manuel.timetable.room.daos.ClassDao
+import dev.manuel.timetable.room.daos.PeriodDao
 import dev.manuel.timetable.room.daos.TimetableDao
 import dev.manuel.timetable.room.entities.ClassWithOccurrences
+import dev.manuel.timetable.room.entities.Period
 import dev.manuel.timetable.room.entities.Timetable
 import dev.manuel.timetable.ui.UIEvent
 import kotlinx.coroutines.Job
@@ -21,11 +23,13 @@ import javax.inject.Inject
 data class ClassDetailsScreenState(
     val classWithOccurrences: ClassWithOccurrences = ClassWithOccurrences(),
     val timetable: Timetable = Timetable(0, ""),
+    val periods: List<Period> = emptyList()
 )
 
 @HiltViewModel
 class ClassDetailsVM @Inject constructor(
     private val classDao: ClassDao,
+    private val periodDao: PeriodDao,
     private val timetableDao: TimetableDao,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -43,18 +47,26 @@ class ClassDetailsVM @Inject constructor(
 
     private val collectorJob: Job
 
+    private var classId: Long = 0L
+
     init {
 
         val args = ClassDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle)
-        val classId = args.classId
+        classId = args.classId
+
+        viewModelScope.launch {
+            periodDao.getAllPeriodsByClass(classId)
+                .collect { mState.value = mState.value.copy(periods = it) }
+        }
 
         collectorJob = viewModelScope.launch {
             classDao.getClassWithOccurrences(classId)
                 .collect {
                     val timetable = timetableDao.getTimetable(it.mClass.timetableId)
-                    mState.value = ClassDetailsScreenState(it, timetable)
+                    mState.value = mState.value.copy(classWithOccurrences = it, timetable = timetable)
                 }
         }
+
     }
 
     fun onDeleteClass() {
@@ -73,6 +85,10 @@ class ClassDetailsVM @Inject constructor(
             classDao.delete(state.value.classWithOccurrences.mClass.id)
             _uiEvent.emit(UIEvent.NavigateBack)
         }
+    }
+
+    suspend fun createPeriod(period: String): Long {
+        return periodDao.insert(Period(period = period, classId = classId))
     }
 
 }
